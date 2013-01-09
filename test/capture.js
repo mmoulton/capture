@@ -40,7 +40,7 @@ describe('capture', function() {
       var testData = fs.readFileSync(testFile),
           refData = fs.readFileSync(refFile);
 
-      assert.deepEqual(testData, refData);
+      assert.equal(JSON.stringify(testData), JSON.stringify(refData));
       done();
     });
 
