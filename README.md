@@ -2,7 +2,7 @@
 
 ## Install
 
-   npm install capture -g
+	npm install capture -g
 
 ## Usage
 
