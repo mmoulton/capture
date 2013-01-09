@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*!
  * Capture - simple screenshot tool using PhantomJS
  * Copyright(c) 2013 Mike Moulton <mike@meltmedia.com>

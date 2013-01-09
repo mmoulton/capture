@@ -1,7 +1,7 @@
 {
   "name": "capture",
   "description": "Captures Screenshots using Phantom.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Mike Moulton <mike@meltmedia.com>",
   "dependencies": {
     "optimist": "0.3.x",
@@ -16,7 +16,7 @@
   "keywords": ["capture", "phantomjs", "screenshot", "web", "website"],
   "repository": "git://github.com/mmoulton/capture",
   "main": "index",
-  "bin": { "capture": "index" },
+  "bin": { "capture": "./index.js" },
   "scripts": {
     "test": "mocha"
   },
