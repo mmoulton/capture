@@ -68,7 +68,7 @@ function capture(urls, options, callback) {
       var phantom = childProcess.execFile(phantomPath, args, function(err, stdout, stderr) {
         if (verbose && stdout) console.log("---\nPhantomJS process stdout [%s]:\n" + stdout + "\n---", phantom.pid);
         if (verbose && stderr) console.log("---\nPhantomJS process stderr [%s]:\n" + stderr + "\n---", phantom.pid);
-        console.log("Rendered %s to %s", url, filePath);
+        if (verbose) console.log("Rendered %s to %s", url, filePath);
         done(err);
       });
       if (verbose)
