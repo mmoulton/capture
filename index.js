@@ -87,101 +87,134 @@ function main() {
   var options = {};
 
   var optimist = require('optimist')
-    .usage('Capture screenshots of URLs.\nUsage: $0 [url1, url2, ...]', {
-      'v': {
+    .usage('Capture screenshots of URLs.\nUsage: $0 [url1 url2 ...]', {
+      'verbose': {
         'type': 'boolean',
         'description': 'Verbose logging',
-        'alias': 'verbose'
+        'alias': 'v'
       },
-      'o': {
+      'out': {
         'type': 'string',
         'description': 'Output directory for captured screenshots',
-        'alias': 'out'
+        'alias': 'o'
       },
-      's': {
-        'type': 'string',
-        'description': 'Read list of urls from JSON file',
-        'alias': 'src'
-      },
-      'f': {
+      'format': {
         'type': 'string',
         'description': 'Output image format (png, jpg, gif)',
-        'alias': 'format',
+        'alias': 'f',
         'default': 'png'
       },
-      'P': {
+      'phantomjs': {
         'type': 'string',
         'description': 'Path to phantomjs bin',
-        'alias': 'phantomjs'
+        'alias': 'P'
       },
-      'u': {
+      'username': {
         'type': 'string',
         'description': 'HTTP Basic Auth Username',
-        'alias': 'username'
+        'alias': 'u'
       },
-      'p': {
+      'password': {
         'type': 'string',
         'description': 'HTTP Basic Auth Password',
-        'alias': 'password'
+        'alias': 'p'
       },
-      'd': {
+      'dimensions': {
         'type': 'string',
         'description': 'Minimum viewport dimensions',
-        'alias': 'dimensions'
-      }
-    })
-    .check(function(argv) {
-      if (!argv._.length && !argv.s) {
-        throw 'You must define at least one url to capture.';
+        'alias': 'd'
+      },
+      'help' : {
+        'type': 'boolean',
+        'description': 'Show this help message and exit',
+        'alias': 'h'
       }
     });
 
   var argv = optimist.argv;
 
-  var urls = argv.s ? [] : argv._;
+  if (argv.help) {
+    optimist.showHelp();
+    process.exit(0);
+  }
 
-  if (argv.s) {
+  // Use url's provided as arguments in CLI
+  if (argv._ && argv._.length > 0) {
+    captureUrls(argv._);
+  }
+
+  // try to read JSON from standard in
+  else {
+    var stdinData = "";
+
+    process.stdin.resume();
+    process.stdin.setEncoding('utf8');
+
+    process.stdin.on('data', function(chunk) {
+      stdinData += chunk;
+    })
+
+    process.stdin.on('end', function(){
+      parseJsonInput(stdinData);
+    });
+  }
+
+  function parseJsonInput(data) {
     try {
-      var file = argv.s;
-      if (fs.statSync(file).isFile()) {
-        var data = fs.readFileSync(file);
-        var parsedUrls = JSON.parse(data);
-        parsedUrls.forEach(function(item) {
+      var urls = [],
+          parsedUrls = JSON.parse(data);
+
+      function findUrl(item) {
+        if ("string" == typeof item) {
+          urls.push(item);
+        } else if ("object" == typeof item && item.url) {
           urls.push(item.url);
-        });
+        } else {
+          console.error("Unable to extract url from: ", item);
+        }
       }
+
+      if ("object" == typeof parsedUrls) {
+        if (parsedUrls.constructor == Array) {
+          parsedUrls.forEach(function(item) {
+            findUrl(item);
+          });
+        } else {
+          findUrl(parsedUrls);
+        }
+      }
+
+      captureUrls(urls);
     }
     catch (err) {
-      console.error("Unknown error", err);
+      console.error("Unable to parse JSON from stdin", err);
+      console.trace();
       process.exit(1);
     }
   }
 
-  // setup capture options from CLI args
-  if (argv.o) options.out = argv.o; // Output directory
-  if (argv.P) options.phantomBin = argv.P; // PhantomJS bin path
-  if (argv.f) options.format = argv.f; // Output image format
-  if (argv.d) options.dimensions = argv.d; // Output image dimensions
-  if (argv.u) options.username = argv.u; // HTTP Basic Auth Username
-  if (argv.p) options.password = argv.p; // HTTP Basic Auth Password
-  if (argv.v) options.verbose = true;
+  function captureUrls(urls) {
 
-  var start = new Date().getTime();
+    if (!urls || urls.length == 0) process.exit(1);
 
-  capture(urls, options, function(err) {
-    var status = 0,
-        end = new Date().getTime();
+    var start = new Date().getTime();
 
-    if (err) {
-      console.error("Error during capture process:", err);
-      status++;
-    } else {
-      console.log("Capture complete [%d miliseconds to execute]", end - start);
-    }
+    capture(urls, argv, function(err) {
+      var status = 0,
+          end = new Date().getTime();
 
-    process.exit(status);
+      if (err) {
+        console.error("Error during capture process:", err);
+        status++;
+      } else {
+        console.log("Capture complete [%d miliseconds to execute]", end - start);
+      }
 
-  });
+      process.exit(status);
+
+    });
+
+  }
 
 }
 

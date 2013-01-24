@@ -12,7 +12,7 @@ var page = require('webpage').create(),
     auth, address, output, resources = {};
 
 var TIMEOUT = 60000,
-    RESOURCE_LOAD_WINDOW = 50,
+    RESOURCE_LOAD_WINDOW = 5,
     RESOURCE_CHECK_SLEEP = 10;
 
 // usage sanity check
