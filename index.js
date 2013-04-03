@@ -20,7 +20,11 @@ var MAX_PHANTOMJS_SPAWNS = 10,
     PHANTOMJS_BIN = "phantomjs",
     OUT_PATH = "./",
     OUT_FORMAT = "png",
-    OUT_DIMENSIONS = "1024*768";
+    OUT_VIERPORT_WIDTH = 1024,
+    OUT_VIEWPORT_HEIGHT = 768,
+    OUT_PAPER_ORIENTATION = "portrait",
+    OUT_PAPER_FORMAT = "A4",
+    OUT_PAPER_MARGIN = "2cm";
 
 function capture(urls, options, callback) {
 
@@ -34,7 +38,11 @@ function capture(urls, options, callback) {
       phantomPath = options.phantomBin || PHANTOMJS_BIN,
       outPath = options.out || OUT_PATH,
       format = options.format || OUT_FORMAT,
-      dimensions = options.dimensions || OUT_DIMENSIONS,
+      viewportWidth = options.viewportWidth || OUT_VIEWPORT_WIDTH,
+      viewportHeight = options.viewportHeight || OUT_VIEWPORT_HEIGHT,
+      paperOrientation = options.paperOrientation || OUT_PAPER_ORIENTATION,
+      paperFormat = options.paperFormat || OUT_PAPER_FORMAT,
+      paperMargin = options.paperMargin || OUT_PAPER_MARGIN,
       username = options.username || false,
       password = options.password || false,
       verbose = options.verbose || false;
@@ -49,21 +57,17 @@ function capture(urls, options, callback) {
           filename = urlParts.pathname,
           auth = urlParts.auth;
 
-      if (S(filename).endsWith("/")) filename += "index"; // Append 
+      if (S(filename).endsWith("/")) filename += "index"; // Append
 
       var filePath = path.resolve(
                       process.cwd(),
                       outPath,
                       S(urlParts.hostname).replaceAll("\\.", "-").s,
                       "./" + filename + "." + format),
-          args = [].concat([captureScript, url, filePath, dimensions]);
-
-      if (auth) {
-        var authParts = auth.split(':');
-        args = args.concat([authParts[0], authParts[1]]);
-      } else if (username && password) {
-        args = args.concat([username, password]);
-      }
+      args = [captureScript, url, filePath, '--username', username,
+        '--password', password, '--paper-orientation', paperOrientation,
+        '--paper-margin', paperMargin, '--paper-format', paperFormat,
+        '--viewport-width', viewportWidth, '--viewport-height', viewportHeight];
 
       var phantom = childProcess.execFile(phantomPath, args, function(err, stdout, stderr) {
         if (verbose && stdout) console.log("---\nPhantomJS process stdout [%s]:\n" + stdout + "\n---", phantom.pid);
@@ -123,6 +127,21 @@ function main() {
         'type': 'string',
         'description': 'Minimum viewport dimensions',
         'alias': 'd'
+      },
+      'paper-format': {
+        'type': 'string',
+        'description': 'Size of the individual PDF pages (A4, letter)',
+        'alias': 'pf'
+      },
+      'paper-orientation': {
+        'type': 'string',
+        'description': 'Orientation of the PDF pages (portrait, landscape)',
+        'alias': 'po'
+      },
+      'paper-margin': {
+        'type': 'string',
+        'description': 'Margin of the PDF pages (2cm, 5mm, etc.)',
+        'alias': 'pm'
       },
       'help' : {
         'type': 'boolean',

@@ -15,28 +15,34 @@ var TIMEOUT = 60000,
     RESOURCE_LOAD_WINDOW = 5,
     RESOURCE_CHECK_SLEEP = 10;
 
-// usage sanity check
-if (system.args.length < 3 || system.args.length > 6) {
-  console.log('Usage: capture.js URL filename [viewportWidth*viewportHeight] [username] [password]');
+// Remove the path to the script from the arguments if it's included
+var mutableArgs = JSON.parse(JSON.stringify(system.args))
+if (mutableArgs[0].indexOf('capture.js') >= 0) {
+  mutableArgs.shift();
+}
+
+if (mutableArgs.length <= 2 || mutableArgs.length % 2 !== 0) {
+  console.log('Usage: capture.js URL filename --viewport-width 1024 --viewport-height 768 --username foo --password bar --paper-orientation landscape --paper-margin 5mm --paper-format a4');
   phantom.exit(1);
 }
 
-address = system.args[1]; // URL
-output = system.args[2]; // Output file
+// Processes the arguments and set them up for Phantom
+options = argsToObject(mutableArgs);
+address = options.address;
+output = options.output;
+page.settings.userName = options.username || '';
+page.settings.password = options.password || '';
 
-// setup the viewport sizing
-if (system.args.length > 3) {
-  viewportSize = system.args[3].split('*');  
-  page.viewportSize = { width: viewportSize[0], height: viewportSize[1] };  
-} else {
-  page.viewportSize = { width: 1024, height: 768 };  
-}
+page.viewportSize = {
+    width: options.viewportWidth || 1024,
+    height: options.viewportHeight || 768,
+  };
 
-// handle BASIC Auth
-if (system.args.length > 4) {
-  page.settings.userName = system.args[4]; // username
-  page.settings.password = system.args[5]; // password
-}
+page.paperSize = {
+  format: options.paperFormat || 'A4',
+  orientation: options.paperOrientation || 'landscape',
+  margin: options.paperMargin || '2.5mm'
+};
 
 // handle resource loads, tracking each outstanding request
 page.onResourceRequested = function (req) {
@@ -102,3 +108,33 @@ page.open(address, function (status) {
   capturePage();
 
 });
+
+/**
+ * Transform an array to an object literal
+ * @param {Array} args Array with seperate arguments
+ * @return {Object}
+ */
+function argsToObject(args) {
+  var options = {};
+  options.address = args.shift();
+  options.output = args.shift();
+
+  // Pair two arguments, while transforming the key to camelCase
+  for (i = 0; i < args.length; i = i + 2) {
+    options[toCamelCase(args[i].substr(2))] = args[i + 1];
+  }
+
+  return options;
+}
+
+
+/**
+ * Take a hypen seperated string and turn it into camel case
+ * @param {String} str The input string
+ * @return {String}
+ */
+function toCamelCase(str) {
+  return str.replace(/-([a-z])/g, function (match) {
+    return match[1].toUpperCase()
+  });
+}
