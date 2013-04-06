@@ -63,6 +63,7 @@ Capture also supports reading in JSON from *stdin*. It will do it's best to find
 
 Capture was writen to aid in regression testing of websites where large cross-cutting changes to things such as CSS were made and we wished to understand the visual differences that might exist between an existing version of a site and the newly modified version. To accomplish this, Capture, coupled with [Crawl](http://github.com/mmoulton/crawl) allows us to take screenshots of both the old and new versions of the site, then perform image differencing on the results. One handy tool for performing the image differencing is a Mac app called [Kaleidoscope](http://www.kaleidoscopeapp.com).
 
+
 ## The MIT License
 
 Copyright (c) Mike Moulton
