@@ -18,17 +18,21 @@ Once NPM is installed, simply install Capture by executing the following from th
 Once installed, you can explore what capture can do by simply typing `capture` into the command line. You will get the built in help that looks something like this:
 
 	Capture screenshots of URLs.
-	Usage: capture [url1 url2 ...]
-
+	Usage: node ./index.js [url1 url2 ...]
+	
 	Options:
-		-v, --verbose     Verbose logging                            [boolean]
-		-o, --out         Output directory for captured screenshots  [string]
-		-f, --format      Output image format (png, jpg, gif)        [string]  [default: "png"]
-		-P, --phantomjs   Path to phantomjs bin                      [string]
-		-u, --username    HTTP Basic Auth Username                   [string]
-		-p, --password    HTTP Basic Auth Password                   [string]
-		-d, --dimensions  Minimum viewport dimensions                [string]
-		-h, --help        Show this help message and exit            [boolean]
+	  --verbose, -v              Verbose logging                                     [boolean]
+	  --out, -o                  Output directory for captured screenshots           [string]
+	  --format, -f               Output image format (png, jpg, gif, pdf)            [string]  [default: "png"]
+	  --phantomjs, -P            Path to phantomjs bin                               [string]
+	  --username, -u             HTTP Basic Auth Username                            [string]
+	  --password, -p             HTTP Basic Auth Password                            [string]
+	  --viewport-width, --vw     Minimum viewport width                              [string]  [default: 1024]
+	  --viewport-height, --vh    Minimum viewport height                             [string]  [default: 768]
+	  --paper-format, --pf       Size of the individual PDF pages (A4, letter)       [string]  [default: "A4"]
+	  --paper-orientation, --po  Orientation of the PDF pages (portrait, landscape)  [string]  [default: "portrait"]
+	  --paper-margin, --pm       Margin of the PDF pages (2cm, 5mm, etc.)            [string]  [default: "2.5mm"]
+	  --help, -h                 Show this help message and exit                     [boolean]
 
 Executing `capture http://your-domain.com/ http://your-domain.com/about/` will create a directory in the current working directory with the following structure:
 
@@ -61,7 +65,7 @@ Capture also supports reading in JSON from *stdin*. It will do it's best to find
 
 ## Example Use Cases
 
-Capture was writen to aid in regression testing of websites where large cross-cutting changes to things such as CSS were made and we wished to understand the visual differences that might exist between an existing version of a site and the newly modified version. To accomplish this, Capture, coupled with [Crawl](http://github.com/mmoulton/crawl) allows us to take screenshots of both the old and new versions of the site, then perform image differencing on the results. One handy tool for performing the image differencing is a Mac app called [Kaleidoscope](http://www.kaleidoscopeapp.com).
+Capture was written to aid in regression testing of websites where large cross-cutting changes to things such as CSS were made and we wished to understand the visual differences that might exist between an existing version of a site and the newly modified version. To accomplish this, Capture, coupled with [Crawl](http://github.com/mmoulton/crawl) allows us to take screenshots of both the old and new versions of the site, then perform image differencing on the results. One handy tool for performing the image differencing is a Mac app called [Kaleidoscope](http://www.kaleidoscopeapp.com).
 
 ## The MIT License
 

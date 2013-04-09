@@ -24,7 +24,7 @@ var MAX_PHANTOMJS_SPAWNS = 10,
     OUT_VIEWPORT_HEIGHT = 768,
     OUT_PAPER_ORIENTATION = "portrait",
     OUT_PAPER_FORMAT = "A4",
-    OUT_PAPER_MARGIN = "2cm";
+    OUT_PAPER_MARGIN = "2.5mm";
 
 function capture(urls, options, callback) {
 
@@ -104,7 +104,7 @@ function main() {
       },
       'format': {
         'type': 'string',
-        'description': 'Output image format (png, jpg, gif)',
+        'description': 'Output image format (png, jpg, gif, pdf)',
         'alias': 'f',
         'default': 'png'
       },
@@ -123,25 +123,35 @@ function main() {
         'description': 'HTTP Basic Auth Password',
         'alias': 'p'
       },
-      'dimensions': {
+      'viewport-width': {
         'type': 'string',
-        'description': 'Minimum viewport dimensions',
-        'alias': 'd'
+        'description': 'Minimum viewport width',
+        'alias': 'vw',
+		'default': OUT_VIEWPORT_WIDTH
+      },
+	  'viewport-height': {
+        'type': 'string',
+        'description': 'Minimum viewport height',
+        'alias': 'vh',
+        'default': OUT_VIEWPORT_HEIGHT
       },
       'paper-format': {
         'type': 'string',
         'description': 'Size of the individual PDF pages (A4, letter)',
-        'alias': 'pf'
+        'alias': 'pf',
+		'default': OUT_PAPER_FORMAT
       },
       'paper-orientation': {
         'type': 'string',
         'description': 'Orientation of the PDF pages (portrait, landscape)',
-        'alias': 'po'
+        'alias': 'po',
+		'default': OUT_PAPER_ORIENTATION
       },
       'paper-margin': {
         'type': 'string',
         'description': 'Margin of the PDF pages (2cm, 5mm, etc.)',
-        'alias': 'pm'
+        'alias': 'pm',
+        'default': OUT_PAPER_MARGIN
       },
       'help' : {
         'type': 'boolean',

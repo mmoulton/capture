@@ -22,7 +22,6 @@ if (mutableArgs[0].indexOf('capture.js') >= 0) {
 }
 
 if (mutableArgs.length <= 2 || mutableArgs.length % 2 !== 0) {
-  console.log('Usage: capture.js URL filename --viewport-width 1024 --viewport-height 768 --username foo --password bar --paper-orientation landscape --paper-margin 5mm --paper-format a4');
   phantom.exit(1);
 }
 
@@ -40,7 +39,7 @@ page.viewportSize = {
 
 page.paperSize = {
   format: options.paperFormat || 'A4',
-  orientation: options.paperOrientation || 'landscape',
+  orientation: options.paperOrientation || 'portrait',
   margin: options.paperMargin || '2.5mm'
 };
 
