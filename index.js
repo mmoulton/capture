@@ -28,6 +28,10 @@ var MAX_PHANTOMJS_SPAWNS = 10,
 
 function capture(urls, options, callback) {
 
+  if (typeof urls === 'string') {
+    urls = new Array(urls);
+  }
+
   if (typeof options === 'function') {
     callback = options;
     options = {};
@@ -57,7 +61,7 @@ function capture(urls, options, callback) {
           filename = urlParts.pathname,
           auth = urlParts.auth,
           filePath;
-          
+
       // The outPath is a file, so don't generate the URLs automatically
       if ([".pdf", ".jpg", ".png", ".gif"].indexOf(outPath.substr(-4)) !== -1) {
         filePath = outPath;
