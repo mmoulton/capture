@@ -1,5 +1,7 @@
 # Capture - Simple screenshot tool using PhantomJS [![Build Status](https://travis-ci.org/mmoulton/capture.png)](https://travis-ci.org/mmoulton/capture)
 
+**NOTE:** This project is no longer being maintained by me. If you are interested in taking over maintenance of this project, let me know.
+
 Capture, as it's name implies, will capture a screenshot of one or more URL's using [PhantomJS](http://phantomjs.org). The format of the screenshot can be anything supported by Phantom, such as PNG, GIF, JPG, or PDF.
 
 Capture is a Node.js based library that can be used as a module within another application, or as a stand alone tool via it's command line interface (CLI).
