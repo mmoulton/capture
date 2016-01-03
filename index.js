@@ -28,6 +28,10 @@ var MAX_PHANTOMJS_SPAWNS = 10,
 
 function capture(urls, options, callback) {
 
+  if (typeof urls === 'string') {
+    urls = new Array(urls);
+  }
+
   if (typeof options === 'function') {
     callback = options;
     options = {};
@@ -55,16 +59,23 @@ function capture(urls, options, callback) {
 
       var urlParts = urlUtil.parse(url, true),
           filename = urlParts.pathname,
-          auth = urlParts.auth;
+          auth = urlParts.auth,
+          filePath;
 
-      if (S(filename).endsWith("/")) filename += "index"; // Append
+      // The outPath is a file, so don't generate the URLs automatically
+      if ([".pdf", ".jpg", ".png", ".gif"].indexOf(outPath.substr(-4)) !== -1) {
+        filePath = outPath;
+      } else {
+        if (S(filename).endsWith("/")) filename += "index"; // Append
 
-      var filePath = path.resolve(
-                      process.cwd(),
-                      outPath,
-                      S(urlParts.hostname).replaceAll("\\.", "-").s,
-                      "./" + filename + "." + format),
-      args = [captureScript, url, filePath, '--username', username,
+        filePath = path.resolve(
+                    process.cwd(),
+                    outPath,
+                    S(urlParts.hostname).replaceAll("\\.", "-").s,
+                    "./" + filename + "." + format);
+      }
+
+      var args = [captureScript, url, filePath, '--username', username,
         '--password', password, '--paper-orientation', paperOrientation,
         '--paper-margin', paperMargin, '--paper-format', paperFormat,
         '--viewport-width', viewportWidth, '--viewport-height', viewportHeight];

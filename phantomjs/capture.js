@@ -32,6 +32,10 @@ output = options.output;
 page.settings.userName = options.username || '';
 page.settings.password = options.password || '';
 
+// This fixes some weird bug on Windows where a large border is
+// displayed along the page.
+page.zoomFactor = 1.2;
+
 page.viewportSize = {
     width: options.viewportWidth || 1024,
     height: options.viewportHeight || 768,

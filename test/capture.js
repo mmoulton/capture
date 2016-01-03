@@ -33,6 +33,19 @@ describe('capture', function() {
       });
     });
 
+    it('should capture screenshot of 1 page to a specific file', function(done) {
+      capture(['http://127.0.0.1:8899/'], { out: './test/tmp/screenshot.png' }, function(err) {
+        assert.ok(fs.statSync(path.join(__dirname, 'tmp/screenshot.png')).isFile());
+        done();
+      });
+    });
+
+    it('should capture screenshot of 1 page specified as a string', function(done) {
+      capture('http://127.0.0.1:8899/', { out: './test/tmp' }, function(err) {
+        assert.ok(fs.statSync(path.join(__dirname, 'tmp/127-0-0-1/index.png')).isFile());
+        done();
+      });
+    });
   });
 
   after(function(done) {
@@ -40,7 +53,7 @@ describe('capture', function() {
     wrench.rmdirSyncRecursive(temp);
     done();
   });
-  
+
 });
 
 
